@@ -41,3 +41,5 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     
     return new_user
+
+# como diferenciar diferentes tipos de erro?
