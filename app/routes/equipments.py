@@ -17,5 +17,5 @@ def get_equipments(
 
     
 @router.get("/{id}")
-def get_equipment_by_id(equipment_id: str):
-    
+def get_equipment_by_id(equipment_id: str, conn = Depends(get_db_connection)):
+    return EquipmentRepository(conn).get_by_id(equipment_id)

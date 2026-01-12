@@ -39,14 +39,55 @@ class EquipmentRepository:
     def get_by_id(self, id: str):
         cursor = self.conn.cursor()
 
-        cursor.execute("SELECT id, name, ean, status, location FROM equipments WHERE id = %s", (id,))
+        equipment_sql = """
+            SELECT
+                e.id, 
+                e.name, 
+                e.ean, 
+                es.name as status, 
+                d.name as location
+            FROM equipments e
+            JOIN equipment_status es ON es.id = e.equipment_status_id 
+            JOIN departments d ON d.id = e.department_id
+            WHERE e.id = %s
+        """
+
+        cursor.execute(equipment_sql, (id,))
         equipment = cursor.fetchone()
 
         if not equipment:
             return None
 
-
         sql_moves = """
-            SELECT 
+            SELECT  
+                previously_located_at as from, 
+                newly_alocated_at as to,
+                created_at as date
+            FROM equipment_moves
+            WHERE equipment_id = %s
+            ORDER BY date DESC
+            LIMIT 5
         """
-        
+        cursor.execute(sql_moves, (equipment['id'],))
+        moves = cursor.fetchall()
+
+        sql_maintenances = """
+            SELECT
+                m.description,
+                me.created_at as date,
+                u.firstname as technician
+            FROM maintenance_equipments me
+            JOIN maintenances m ON m.id = me.maintenance_id
+            JOIN users u ON m.responsible_id = u.id
+            WHERE me.equipment_id = %s
+            ORDER BY date
+            LIMIT 3
+        """
+        cursor.execute(sql_maintenances, (equipment['id'],))
+        maintenances = cursor.fetchall()
+
+        response_data = dict(equipment)
+        response_data["history_moves"] = moves
+        response_data["history_maintenances"] = maintenances
+
+        return response_data
