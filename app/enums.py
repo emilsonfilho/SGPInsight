@@ -1,0 +1,25 @@
+from enum import Enum
+
+class EquipmentStatusEnum(str, Enum):
+    AVAILABLE = 1
+    IN_USE = 2
+    UNDER_MAINTENANCE = 3
+    BROKEN = 4
+    DECOMMISSIONED = 5
+
+class RoleEnum(str, Enum):
+    MANAGER = "74025ffc-7a7d-4c75-babf-9f0e398238c0"
+    ANALYST = "5180990f-c3f0-4200-8593-54b23c04b3bf"
+    INTERN = "e60daf6e-e98d-4e42-bb66-e85af4bfe124"
+
+class DepartmentEnum(str, Enum):
+    CONSTRUCTION_SITE_PROJECT_ALPHA = "d9cd69c2-7690-4d3f-baae-ea8e96e323aa"
+    CONSTRUCTION_SITE_PROJECT_BETA = "e8841c8d-5641-4349-a3b6-6a5d53fb475a" 
+    SITE_ENGINEERING_OFFICE = "5537e1f0-9480-405b-87fb-dba79ec6ffa1"
+    FIELD_IT_SUPPORT = "9bdbcb3c-1aad-4179-994c-29ab4a50f58f" 
+    IT_LOGISTICS_WAREHOUSE = "5adfd3e0-50bc-4b37-a216-799a818feedb" 
+    ASSET_MANAGEMENT = "5dea7663-05bb-43b2-9f75-ac92fe4140dd" 
+    COMMERCIAL_DEPARTMENT = "8249748d-8320-4e99-84a0-cba81a38615a" 
+    HUMAN_RESOURCES = "da3791af-165e-4766-bf95-2e047dd85074" 
+    FINANCE_CONTROLLERSHIP = "b6e07ea4-527c-4731-bdbf-bd501b2a1807" 
+    CONFIGURATION_REPAIR_LAB = "24616230-a688-491b-8e99-2fe51d2d324e" 

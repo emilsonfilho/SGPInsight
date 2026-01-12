@@ -1,0 +1,2 @@
+- get equipments listagem geral 
+    - query params: filtragem por status, departamento_id ou ean
