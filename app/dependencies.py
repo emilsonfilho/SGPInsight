@@ -37,14 +37,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "WWW-Authenticate": "Bearer"
         },
     )
+    print("porra2")
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         
         email: str = payload.get("sub")
         user_id: int = payload.get("id")
         role_id: int = payload.get("role")
+
+        print("porra")
         
         if email is None:
+            print("foi aqui?")
             raise credentials_exception
         
         return {
