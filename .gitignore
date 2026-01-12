@@ -1,0 +1,4 @@
+.env
+colmeia.db
+.venv
+script.sql
