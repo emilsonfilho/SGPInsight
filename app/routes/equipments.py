@@ -16,3 +16,6 @@ def get_equipments(
     return EquipmentRepository(conn).get(ean, department, EquipmentStatusEnum.from_keyword(status))
 
     
+@router.get("/{id}")
+def get_equipment_by_id(equipment_id: str):
+    

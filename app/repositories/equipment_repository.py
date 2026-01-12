@@ -11,7 +11,7 @@ class EquipmentRepository:
         department: DepartmentEnum | None = None,
         status: EquipmentStatusEnum | None = None
     ):
-        cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+        cursor = self.conn.cursor()
 
         sql = "SELECT * FROM equipments"
         conditions = []
@@ -35,3 +35,18 @@ class EquipmentRepository:
         cursor.execute(sql, params)
 
         return cursor.fetchall()
+
+    def get_by_id(self, id: str):
+        cursor = self.conn.cursor()
+
+        cursor.execute("SELECT id, name, ean, status, location FROM equipments WHERE id = %s", (id,))
+        equipment = cursor.fetchone()
+
+        if not equipment:
+            return None
+
+
+        sql_moves = """
+            SELECT 
+        """
+        
