@@ -5,10 +5,11 @@ from config import settings
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from config import settings
-from database import conn
+from database import DB_CONFIG
+from psycopg2.extras import RealDictCursor
 
 import os
-import sqlite3
+import psycopg2
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -52,9 +53,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "role_id": role_id
         }
     except JWTError:
+        print(f"\n\n---> ERRO REVELADO: {e} <---\n\n")
         raise credentials_exception
 
 async def get_db_connection():
-    conn.row_factory = sqlite3.Row
-    
-    return conn
+    conn = None
+      
+    try:
+        conn = psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
+
+        yield conn
+    finally:
+        if conn is not None:
+            conn.close()
+            print("Conexão fechada")

@@ -2,3 +2,9 @@
 colmeia.db
 .venv
 script.sql
+sql/
+*.pyc
+.vscode
+compose.yml
+schema.sql
+todo.txt
