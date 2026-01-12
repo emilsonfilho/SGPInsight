@@ -11,6 +11,25 @@ class EquipmentStatusEnum(str, Enum):
     STOCK_READY = "4a6dbd66-944e-46c4-9288-7b6338196814"
     STOCK_RESERVE = "b0de06e6-065d-4d00-83d5-0a88654d0a7a"
 
+    @classmethod
+    def from_keyword(cls, keyword: str | None):
+        if not keyword:
+            return None
+
+        mapping = {
+            "campo_operacional": cls.OPERATIONAL_FIELD,
+            "escritorio_operacional": cls.OPERATIONAL_OFFICE,
+            "laboratorio": cls.MAINTENANCE_LAB,
+            "terceirizado": cls.MAINTENANCE_OUTSOURCED,
+            "esperando_configuracao": cls.AWAITING_CONFIGURATION,
+            "esperando_descarte": cls.AWAITING_DISPOSAL,
+            "descartado": cls.DISPOSED,
+            "pronto": cls.STOCK_READY,
+            "reserva": cls.STOCK_RESERVE
+        }
+
+        return mapping.get(keyword.lower())
+
 class RoleEnum(str, Enum):
     MANAGER = "74025ffc-7a7d-4c75-babf-9f0e398238c0"
     ANALYST = "5180990f-c3f0-4200-8593-54b23c04b3bf"

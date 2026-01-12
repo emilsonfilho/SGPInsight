@@ -7,12 +7,12 @@ router = APIRouter()
 
 @router.get("/")
 def get_equipments(
-    status: EquipmentStatusEnum | None = None,
+    status: str | None = None,
     department: DepartmentEnum | None = None,
     ean: str | None = None,
     conn = Depends(get_db_connection),
     user = Depends(get_current_user)
 ):
-    return EquipmentRepository(conn).get(ean, department, status)
+    return EquipmentRepository(conn).get(ean, department, EquipmentStatusEnum.from_keyword(status))
 
     

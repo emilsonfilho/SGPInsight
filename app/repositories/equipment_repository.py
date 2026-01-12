@@ -4,7 +4,7 @@ from psycopg2.extras import RealDictCursor
 class EquipmentRepository:
     def __init__(self, connection):
         self.conn = connection
-    
+
     def get(
         self,
         ean: str | None = None,
