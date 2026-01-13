@@ -37,7 +37,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "WWW-Authenticate": "Bearer"
         },
     )
-    print("porra2")
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         
