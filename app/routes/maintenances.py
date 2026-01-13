@@ -3,7 +3,7 @@ from dependencies import get_db_connection, get_current_user
 from repositories.maintenance_repository import MaintenanceRepository
 from enums import MaintenanceStatusEnum
 from schemas.maintenance import MaintenanceCreate, Maintenance
-from schemas.component import ComponentInstall, Component
+from schemas.component import ComponentInstall, Component, ComponentRemove
 
 router = APIRouter()
 
@@ -47,3 +47,12 @@ def install_component(
     user = Depends(get_current_user),
 ):
     return MaintenanceRepository(conn).install_component(maintenance_id, component)
+
+@router.post("/{id}/components/remove")
+def remove_component(
+    maintenance_id: str,
+    component: ComponentRemove,
+    conn = Depends(get_db_connection),
+    user = Depends(get_current_user)
+):
+    return MaintenanceRepository(conn).remove_component(maintenance_id, component)

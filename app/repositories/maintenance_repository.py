@@ -1,6 +1,6 @@
 from enums import MaintenanceStatusEnum
 from schemas.maintenance import MaintenanceCreate
-from schemas.component import ComponentInstall
+from schemas.component import ComponentInstall, ComponentRemove
 from .base_repository import BaseRepository
 from datetime import datetime
 
@@ -121,6 +121,44 @@ class MaintenanceRepository(BaseRepository):
             cursor.execute(query, vals)
             self.conn.commit()
 
+            return cursor.fetchone()
+        except Exception as e:
+            self.conn.rollback()
+            raise e
+        
+    def remove_component(
+        self, 
+        maintenance_id: str,
+        component: ComponentRemove
+    ):
+        cursor = self.conn.cursor()
+
+        data = component.model_dump()
+        data['remotion_maintenance_id'] = maintenance_id
+        data['removed_at'] = datetime.now()
+
+        set_str, vals = self._prepare_update(data)
+
+        try:
+            sql = f"""
+                UPDATE instalation_components
+                SET {set_str}
+                WHERE 
+                    instalation_maintenance_id = %s 
+                    AND equipment_id = %s
+                    AND removed_at IS NULL
+                RETURNING *
+            """
+
+            vals.append(maintenance_id)
+            vals.append(component.equipment_id)
+
+            cursor.execute(sql, vals)
+            self.conn.commit()
+
+            if cursor.rowcount == 0:
+                return None
+            
             return cursor.fetchone()
         except Exception as e:
             self.conn.rollback()
