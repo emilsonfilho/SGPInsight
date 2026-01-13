@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import auth, equipments, maintenances, components, alerts, departments
+from routes import auth, equipments, maintenances, components, alerts, departments, roles
 
 app = FastAPI()
 
@@ -9,3 +9,4 @@ app.include_router(maintenances.router, prefix="/maintenances")
 app.include_router(components.router, prefix="/components")
 app.include_router(alerts.router, prefix="/alerts")
 app.include_router(departments.router, prefix="/departments")
+app.include_router(roles.router, prefix="/roles")
