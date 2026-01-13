@@ -3,6 +3,7 @@ from dependencies import get_db_connection, get_current_user
 from repositories.maintenance_repository import MaintenanceRepository
 from enums import MaintenanceStatusEnum
 from schemas.maintenance import MaintenanceCreate, Maintenance
+from schemas.component import ComponentInstall, Component
 
 router = APIRouter()
 
@@ -37,3 +38,12 @@ def finish_maintenance(
     user = Depends(get_current_user)
 ):
     return MaintenanceRepository(conn).finish(maintenance_id)
+
+@router.post("/{id}/components/install", response_model=Component, status_code=status.HTTP_201_CREATED)
+def install_component(
+    maintenance_id: str,
+    component: ComponentInstall,
+    conn = Depends(get_db_connection), 
+    user = Depends(get_current_user),
+):
+    return MaintenanceRepository(conn).install_component(maintenance_id, component)

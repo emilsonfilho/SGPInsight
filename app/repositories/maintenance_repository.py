@@ -1,5 +1,6 @@
 from enums import MaintenanceStatusEnum
 from schemas.maintenance import MaintenanceCreate
+from schemas.component import ComponentInstall
 from .base_repository import BaseRepository
 from datetime import datetime
 
@@ -91,6 +92,36 @@ class MaintenanceRepository(BaseRepository):
             self.conn.commit()
 
             return updated_maintenance
+        except Exception as e:
+            self.conn.rollback()
+            raise e
+        
+    def install_component(
+            self, 
+            maintenance_id: str, 
+            component: ComponentInstall
+    ):
+        cursor = self.conn.cursor()
+
+        try:
+            data = component.model_dump(exclude_unset=True)
+            data['instalation_maintenance_id'] = maintenance_id
+            data['installed_at'] = datetime.now()
+            
+            cols, placeholders, vals = self._prepare_insert(data)
+
+            query = f"""
+                INSERT INTO instalation_components
+                ({cols})
+                VALUES
+                ({placeholders})
+                RETURNING *
+            """
+
+            cursor.execute(query, vals)
+            self.conn.commit()
+
+            return cursor.fetchone()
         except Exception as e:
             self.conn.rollback()
             raise e
