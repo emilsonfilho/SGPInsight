@@ -62,3 +62,15 @@ class MaintenanceStatusEnum(Enum):
         }
 
         return mapping.get(keyword.lower())
+    
+class ComponentStatusEnum(str, Enum):
+    IN_STOCK_NEW = '25e8d8d4-27b0-4d8f-8f31-5dd30b6bd0b3'
+    IN_STOCK_REFURBISHED = '592b845e-70bf-49c0-972d-6c9abb9ed0fc'
+    INSTALLED_OPERATIONAL = 'f38ba039-adff-448c-be88-f3350841344b'
+    INSTALLED_DEGRADED = '5d051672-891f-44b3-ac53-d0161b9d396b'
+    MAINTENANCE_INTERNAL = 'f490b04f-4970-4198-a302-d961900a17a1'
+    MAINTENANCE_OUTSOURCED = 'bfd63434-fc36-4def-b916-d2835e2c7dd4'
+    AWAITING_DISPOSAL = '92f8e4bd-4620-4605-9e08-fc922512ab23'
+    DISCARDED_SCRAP = '82535b4f-cf54-4294-a0d4-9d8ed409f3f6'
+    RETURNED_TO_SUPPLIER = '9a01331e-ea71-4362-8059-bd35ce42d07a'
+    QUALITY_TESTING = 'd0f89642-9ed7-482a-a1b0-9abfd960ddfa'
