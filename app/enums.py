@@ -46,3 +46,19 @@ class DepartmentEnum(str, Enum):
     HUMAN_RESOURCES = "da3791af-165e-4766-bf95-2e047dd85074" 
     FINANCE_CONTROLLERSHIP = "b6e07ea4-527c-4731-bdbf-bd501b2a1807" 
     CONFIGURATION_REPAIR_LAB = "24616230-a688-491b-8e99-2fe51d2d324e" 
+
+class MaintenanceStatusEnum(Enum):
+    ACTIVE = 1
+    CLOSED = 2
+
+    @classmethod
+    def from_keyword(cls, keyword: str | None):
+        if not keyword:
+            return None
+        
+        mapping = {
+            "ativo": cls.ACTIVE,
+            "fechado": cls.CLOSED
+        }
+
+        return mapping.get(keyword.lower())
