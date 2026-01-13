@@ -9,7 +9,8 @@ class AlertRepository:
             query = """
                 "SELECT a.id, description, origin, equipment_id, name as priority
                 FROM alerts a
-                JOIN alert_priority ap ON priority_id = ap.id"
+                JOIN alert_priority ap ON priority_id = ap.id
+                ORDER BY priority_id DESC"
             """
             
             cursor.execute(sql)
