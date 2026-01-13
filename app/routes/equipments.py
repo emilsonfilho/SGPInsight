@@ -18,7 +18,7 @@ def get_equipments(
 
     
 @router.get("/{id}")
-def get_equipment_by_id(equipment_id: str, conn = Depends(get_db_connection)):
+def get_equipment_by_id(equipment_id: str, conn = Depends(get_db_connection), user = Depends(get_current_user)):
     return EquipmentRepository(conn).get_by_id(equipment_id)
 
 @router.post(
@@ -26,13 +26,13 @@ def get_equipment_by_id(equipment_id: str, conn = Depends(get_db_connection)):
         response_model=Equipment,
         status_code=status.HTTP_201_CREATED
 )
-def create_equipment(equipment: EquipmentCreate, conn = Depends(get_db_connection)):
+def create_equipment(equipment: EquipmentCreate, conn = Depends(get_db_connection), user = Depends(get_current_user)):
     return EquipmentRepository(conn).add(equipment)
 
 @router.put("/{id}", response_model=Equipment)
-def update_equipment(equipment_id: str, equipment: EquipmentCreate, conn = Depends(get_db_connection)):
+def update_equipment(equipment_id: str, equipment: EquipmentCreate, conn = Depends(get_db_connection), user = Depends(get_current_user)):
     return EquipmentRepository(conn).update(equipment_id, equipment)
 
 @router.post("/{id}/move", response_model=EquipmentMoveResponse)
-def move_equipment(equipment_id: str, move: EquipmentMoveCreate, conn = Depends(get_db_connection)):
+def move_equipment(equipment_id: str, move: EquipmentMoveCreate, conn = Depends(get_db_connection), user = Depends(get_current_user)):
     return EquipmentRepository(conn).move(equipment_id, move)

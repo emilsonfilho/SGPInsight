@@ -9,3 +9,4 @@ compose.yml
 schema.sql
 todo.txt
 __pycache__/
+backup_colmeia.sql
