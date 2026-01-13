@@ -9,7 +9,7 @@ class UserRepository:
         cursor = self.conn.cursor()
         
         sql = """
-            SELECT id, firstName, lastName, email, role_id, password, disabled FROM users WHERE email = ?
+            SELECT id, firstName, lastName, email, role_id, password, disabled FROM users WHERE email = %s
         """
         values = login_data.username,
             
@@ -19,4 +19,4 @@ class UserRepository:
         if not row:
             return None
         
-        return UserLogin(**dict(row))
+        return UserLogin(**row)

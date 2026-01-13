@@ -1,9 +1,11 @@
-import sqlite3
+from dotenv import load_dotenv
 
-from pathlib import Path
+import os
 
-FILE_PATH = Path(__file__).resolve().parent
-PROJECT_ROOT = FILE_PATH.parent
-db_path = PROJECT_ROOT / "colmeia.db"
-
-conn = sqlite3.connect(db_path)
+DB_CONFIG = {
+    'dbname': os.getenv("DB_NAME"),
+    'user': os.getenv("DB_USER"),
+    'password': os.getenv("DB_PASS"),
+    'host': os.getenv("DB_HOST"),
+    'port': os.getenv("DB_PORT")
+}
