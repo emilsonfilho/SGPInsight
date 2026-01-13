@@ -1,5 +1,5 @@
 from enums import DepartmentEnum, EquipmentStatusEnum
-from schemas.equipment import EquipmentCreate
+from schemas.equipment import EquipmentCreate, EquipmentMoveCreate
 from repositories.base_repository import BaseRepository
 
 class EquipmentRepository(BaseRepository):
@@ -97,9 +97,6 @@ class EquipmentRepository(BaseRepository):
         data = equipment.model_dump(exclude_unset=True)
         cols, placeholders, vals = self._prepare_insert(data)
 
-        print(cols)
-        print(vals)
-
         query = f"""
             INSERT INTO equipments 
             ({cols}) 
@@ -136,3 +133,46 @@ class EquipmentRepository(BaseRepository):
 
         data['id'] = equipment_id
         return data
+
+    def move(self, equipment_id: str, move: EquipmentMoveCreate):
+        cursor = self.conn.cursor()
+        
+        try:
+            sql_get_current = "SELECT department_id FROM equipments WHERE id = %s"
+            cursor.execute(sql_get_current, (equipment_id,))
+            equipment = cursor.fetchone()
+
+            if not equipment:
+                raise ValueError("Equipamento não encontrado")
+
+            previous_department_id = equipment['department_id']
+
+            data = move.model_dump()
+
+            sql_update = """
+                UPDATE equipments
+                SET department_id = %s
+                WHERE id = %s
+            """
+
+            cursor.execute(sql_update, (data['newly_alocated_at'], equipment_id))
+
+            data['equipment_id'] = equipment_id
+            data['previously_located_at'] = previous_department_id
+            cols, placeholders, vals = self._prepare_insert(data)
+
+            sql_insert = f"""
+                INSERT INTO equipment_moves
+                ({cols})
+                VALUES
+                ({placeholders})
+                RETURNING *
+            """
+
+            cursor.execute(sql_insert, vals)
+            self.conn.commit()
+
+            return cursor.fetchone()
+        except Exception as e:
+            self.conn.rollback()
+            raise e

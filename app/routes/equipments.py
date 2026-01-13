@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from enums import EquipmentStatusEnum, DepartmentEnum
 from dependencies import get_db_connection, get_current_user
 from repositories.equipment_repository import EquipmentRepository
-from schemas.equipment import EquipmentCreate, Equipment
+from schemas.equipment import EquipmentCreate, Equipment, EquipmentMoveCreate, EquipmentMoveResponse
 
 router = APIRouter()
 
@@ -32,3 +32,7 @@ def create_equipment(equipment: EquipmentCreate, conn = Depends(get_db_connectio
 @router.put("/{id}", response_model=Equipment)
 def update_equipment(equipment_id: str, equipment: EquipmentCreate, conn = Depends(get_db_connection)):
     return EquipmentRepository(conn).update(equipment_id, equipment)
+
+@router.post("/{id}/move", response_model=EquipmentMoveResponse)
+def move_equipment(equipment_id: str, move: EquipmentMoveCreate, conn = Depends(get_db_connection)):
+    return EquipmentRepository(conn).move(equipment_id, move)
