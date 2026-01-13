@@ -30,10 +30,35 @@ class EquipmentStatusEnum(str, Enum):
 
         return mapping.get(keyword.lower())
 
+    @property
+    def label(self):
+        labels = {
+            self.OPERATIONAL_FIELD: "Operacional (Campo)",
+            self.OPERATIONAL_OFFICE: "Operacional (Escritório)",
+            self.MAINTENANCE_LAB: "Em Manutenção (Laboratório)",
+            self.MAINTENANCE_OUTSOURCED: "Em Manutenção (Terceirizada)",
+            self.AWAITING_CONFIGURATION: "Aguardando Configuração",
+            self.AWAITING_DISPOSAL: "Aguardando Descarte",
+            self.DISPOSED: "Descartado",
+            self.STOCK_READY: "Em Estoque (Pronto)",
+            self.STOCK_RESERVE: "Em Estoque (Reserva)"
+        }
+        return labels.get(self, "Desconhecido")
+
 class RoleEnum(str, Enum):
-    MANAGER = "74025ffc-7a7d-4c75-babf-9f0e398238c0"
-    ANALYST = "5180990f-c3f0-4200-8593-54b23c04b3bf"
-    INTERN = "e60daf6e-e98d-4e42-bb66-e85af4bfe124"
+    MANAGER = "2f87ad2e-1fd2-49bb-a2a9-789841d64de5"
+    ANALYST = "22a544a1-1493-4509-885d-b16745509b2e"
+    INTERN = "c4a0674c-7643-4737-a274-9955c52aedd5"
+
+    @property
+    def label(self):
+        labels = {
+            RoleEnum.MANAGER: "Gerente",
+            RoleEnum.ANALYST: "Analista",
+            RoleEnum.INTERN: "Estagiário"
+        }
+
+        return labels.get(self)
 
 class DepartmentEnum(str, Enum):
     CONSTRUCTION_SITE_PROJECT_ALPHA = "d9cd69c2-7690-4d3f-baae-ea8e96e323aa"
@@ -45,11 +70,28 @@ class DepartmentEnum(str, Enum):
     COMMERCIAL_DEPARTMENT = "8249748d-8320-4e99-84a0-cba81a38615a" 
     HUMAN_RESOURCES = "da3791af-165e-4766-bf95-2e047dd85074" 
     FINANCE_CONTROLLERSHIP = "b6e07ea4-527c-4731-bdbf-bd501b2a1807" 
-    CONFIGURATION_REPAIR_LAB = "24616230-a688-491b-8e99-2fe51d2d324e" 
+    CONFIGURATION_REPAIR_LAB = "24616230-a688-491b-8e99-2fe51d2d324e"
+
+    @property
+    def label(self):
+        # Descrições legíveis para UI/Relatórios
+        labels = {
+            self.CONSTRUCTION_SITE_PROJECT_ALPHA: "Canteiro de Obras - Projeto Alpha",
+            self.CONSTRUCTION_SITE_PROJECT_BETA: "Canteiro de Obras - Projeto Beta",
+            self.SITE_ENGINEERING_OFFICE: "Escritório de Engenharia",
+            self.FIELD_IT_SUPPORT: "Suporte Técnico de Campo",
+            self.IT_LOGISTICS_WAREHOUSE: "Almoxarifado e Logística de TI",
+            self.ASSET_MANAGEMENT: "Gestão de Ativos",
+            self.COMMERCIAL_DEPARTMENT: "Departamento Comercial",
+            self.HUMAN_RESOURCES: "Recursos Humanos (RH)",
+            self.FINANCE_CONTROLLERSHIP: "Financeiro e Controladoria",
+            self.CONFIGURATION_REPAIR_LAB: "Laboratório de Manutenção e Configuração"
+        }
+        return labels.get(self)
 
 class MaintenanceStatusEnum(Enum):
-    ACTIVE = 1
-    CLOSED = 2
+    ACTIVE = "active"
+    CLOSED = "closed"
 
     @classmethod
     def from_keyword(cls, keyword: str | None):
