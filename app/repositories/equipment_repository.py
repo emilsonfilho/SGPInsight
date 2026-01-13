@@ -1,6 +1,5 @@
 from enums import DepartmentEnum, EquipmentStatusEnum
 from schemas.equipment import EquipmentCreate
-from psycopg2.extras import RealDictCursor
 from repositories.base_repository import BaseRepository
 
 class EquipmentRepository(BaseRepository):
