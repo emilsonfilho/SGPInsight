@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: minhasenha123
-      POSTGRES_DB: colmeia_db
+      POSTGRES_USER: seu_user
+      POSTGRES_PASSWORD: sua_senha
+      POSTGRES_DB: seu_banco_de_dados
     ports:
       - "5432:5432"
     volumes:
