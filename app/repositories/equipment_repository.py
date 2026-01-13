@@ -1,7 +1,9 @@
 from enums import DepartmentEnum, EquipmentStatusEnum
+from schemas.equipment import EquipmentCreate
 from psycopg2.extras import RealDictCursor
+from repositories.base_repository import BaseRepository
 
-class EquipmentRepository:
+class EquipmentRepository(BaseRepository):
     def __init__(self, connection):
         self.conn = connection
 
@@ -91,3 +93,24 @@ class EquipmentRepository:
         response_data["history_maintenances"] = maintenances
 
         return response_data
+
+    def add(self, equipment: EquipmentCreate):
+        data = equipment.model_dump(exclude_unset=True)
+        cols, placeholders, vals = self._prepare_insert(data)
+
+        print(cols)
+        print(vals)
+
+        query = f"""
+            INSERT INTO equipments 
+            ({cols}) 
+            VALUES
+            ({placeholders})
+            RETURNING *
+        """
+
+        cursor = self.conn.cursor()
+        cursor.execute(query, vals)
+        self.conn.commit()
+
+        return cursor.fetchone()
