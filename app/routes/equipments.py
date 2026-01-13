@@ -28,3 +28,7 @@ def get_equipment_by_id(equipment_id: str, conn = Depends(get_db_connection)):
 )
 def create_equipment(equipment: EquipmentCreate, conn = Depends(get_db_connection)):
     return EquipmentRepository(conn).add(equipment)
+
+@router.put("/{id}", response_model=Equipment)
+def update_equipment(equipment_id: str, equipment: EquipmentCreate, conn = Depends(get_db_connection)):
+    return EquipmentRepository(conn).update(equipment_id, equipment)

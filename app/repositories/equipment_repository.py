@@ -113,3 +113,26 @@ class EquipmentRepository(BaseRepository):
         self.conn.commit()
 
         return cursor.fetchone()
+    
+    def update(self, equipment_id: str, equipment: EquipmentCreate):
+        data = equipment.model_dump(exclude_unset=True)
+        
+        set_str, vals = self._prepare_update(data)
+
+        query = f"""
+            UPDATE equipments
+            SET {set_str}
+            WHERE id = %s
+        """
+
+        vals.append(equipment_id)
+
+        cursor = self.conn.cursor()
+        cursor.execute(query, vals)
+        self.conn.commit()
+
+        if cursor.rowcount == 0:
+            return None
+
+        data['id'] = equipment_id
+        return data
