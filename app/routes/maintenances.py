@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from dependencies import get_db_connection, get_current_user
 from repositories.maintenance_repository import MaintenanceRepository
 from enums import MaintenanceStatusEnum
+from schemas.maintenance import MaintenanceCreate, Maintenance
 
 router = APIRouter()
 
@@ -13,3 +14,15 @@ def get_maintenances(
     user = Depends(get_current_user)
 ):
     return MaintenanceRepository(conn).get(MaintenanceStatusEnum.from_keyword(status), responsible_id)
+
+@router.post(
+        "/",
+        response_model=Maintenance,
+        status_code=status.HTTP_201_CREATED
+)
+def create_maintenance(
+    maintenance: MaintenanceCreate, 
+    conn = Depends(get_db_connection), 
+    user = Depends(get_current_user)
+):
+    return MaintenanceRepository(conn).add(maintenance)
