@@ -1,6 +1,7 @@
 from enums import MaintenanceStatusEnum
 from schemas.maintenance import MaintenanceCreate
 from .base_repository import BaseRepository
+from datetime import datetime
 
 class MaintenanceRepository(BaseRepository):
     def __init__(self, connection):
@@ -72,4 +73,24 @@ class MaintenanceRepository(BaseRepository):
             self.conn.rollback()
             raise e
             
-        
+    def finish(self, maintenance_id: str):
+        cursor = self.conn.cursor()
+
+        try:
+            now = datetime.now()
+            
+            query = """
+                UPDATE maintenances
+                SET finished_at = %s
+                WHERE id = %s
+                RETURNING *
+            """
+
+            cursor.execute(query, (now, maintenance_id))
+            updated_maintenance = cursor.fetchone() 
+            self.conn.commit()
+
+            return updated_maintenance
+        except Exception as e:
+            self.conn.rollback()
+            raise e

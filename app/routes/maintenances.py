@@ -26,3 +26,14 @@ def create_maintenance(
     user = Depends(get_current_user)
 ):
     return MaintenanceRepository(conn).add(maintenance)
+
+@router.post(
+        "/{id}/finish",
+        response_model=Maintenance
+)
+def finish_maintenance(
+    maintenance_id: str, 
+    conn = Depends(get_db_connection), 
+    user = Depends(get_current_user)
+):
+    return MaintenanceRepository(conn).finish(maintenance_id)
