@@ -8,3 +8,4 @@ sql/
 compose.yml
 schema.sql
 todo.txt
+__pycache__/
