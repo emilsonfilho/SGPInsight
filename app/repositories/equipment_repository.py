@@ -14,7 +14,7 @@ class EquipmentRepository(BaseRepository):
     ):
         cursor = self.conn.cursor()
 
-        sql = "SELECT * FROM equipments"
+        sql = "SELECT id, name, ean, equipment_status_id as status, department_id as department FROM equipments"
         conditions = []
         params = []
 
