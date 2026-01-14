@@ -14,7 +14,7 @@ class MaintenanceCreate(Base):
 class Maintenance(Base):
     id: str
     description: str
-    responsible_id: str
+    responsible_id: str # fazer a refatoração aqui
     created_at: datetime
     finished_at: Optional[datetime] = None
 
