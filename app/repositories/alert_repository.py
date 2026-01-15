@@ -49,3 +49,17 @@ class AlertRepository(BaseRepository):
         except Exception as e:
             self.conn.rollback()
             raise e
+
+    def delete(self, alert_id: str):
+        cursor = self.conn.cursor()
+        
+        try:
+            cursor.execute("DELETE FROM alerts WHERE id = %s", (alert_id,))
+            self.conn.commit()
+            
+            # Retorna True se apagou alguma linha, False se o ID não existia
+            return cursor.rowcount > 0
+            
+        except Exception as e:
+            self.conn.rollback()
+            raise e

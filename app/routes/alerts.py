@@ -19,3 +19,14 @@ def create_alert(
     user = Depends(get_current_user)
 ):
     return AlertRepository(conn).create(alert)
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_alert(id: str, conn = Depends(get_db_connection), user = Depends(get_current_user)):
+    success = AlertRepository(conn).delete(id)
+    
+    if not success:
+        # Se tentou apagar algo que não existe, retorna 404
+        raise HTTPException(status_code=404, detail="Alerta não encontrado")
+    
+    # Retorna nada (204) pois o recurso deixou de existir
+    return
