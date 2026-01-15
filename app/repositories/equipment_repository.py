@@ -154,8 +154,12 @@ class EquipmentRepository(BaseRepository):
 
             data = move.model_dump()
 
+            # Antes de executar o SQL, poderia considerar-se a verificação se o local de
+            # destino e o local de origem não são os mesmos, pois isso poderia criar
+            # inconsistências de RF no sistema
+
             sql_update = """
-                UPDATE equipmentsreturn
+                UPDATE equipments
                 SET department_id = %s
                 WHERE id = %s
             """
