@@ -102,7 +102,7 @@ class EquipmentRepository(BaseRepository):
             ({cols}) 
             VALUES
             ({placeholders})
-            RETURNING *
+            RETURNING id, name, ean, equipment_status_id as status, department_id AS department
         """
 
         cursor = self.conn.cursor()
