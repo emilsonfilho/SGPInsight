@@ -1,5 +1,5 @@
 from enums import DepartmentEnum, EquipmentStatusEnum
-from schemas.equipment import EquipmentCreate, EquipmentMoveCreate
+from schemas.equipment import EquipmentCreate, EquipmentMoveCreate, EquipmentHistoryResponse
 from repositories.base_repository import BaseRepository
 
 class EquipmentRepository(BaseRepository):
@@ -150,7 +150,7 @@ class EquipmentRepository(BaseRepository):
             data = move.model_dump()
 
             sql_update = """
-                UPDATE equipments
+                UPDATE equipmentsreturn
                 SET department_id = %s
                 WHERE id = %s
             """
@@ -175,4 +175,67 @@ class EquipmentRepository(BaseRepository):
             return cursor.fetchone()
         except Exception as e:
             self.conn.rollback()
+            raise e
+
+    def history(self, equipment_id: str, page: int, per_page: int):
+        cursor = self.conn.cursor()
+
+        sql = """
+            SELECT
+                json_build_object(
+                    'id', e.id,
+                    'name', e.name,
+                    'ean', e.ean,
+                    'status', e.equipment_status_id,
+                    'department', e.department_id
+                ) AS equipment_summary,
+                json_build_object(
+                    'page', %s,
+                    'per_page', %s,
+                    'total_records', (SELECT COUNT(*) FROM equipments)
+                ) AS pagination,
+                json_build_object(
+                    'movements', COALESCE(( -- Adicionado COALESCE aqui
+                        SELECT json_agg(
+                            json_build_object(
+                                'id', em.id,
+                                'equipment_id', em.equipment_id,
+                                'previously_located_at', em.previously_located_at,
+                                'newly_alocated_at', em.newly_alocated_at,
+                                'date', em.created_at
+                            )
+                        )
+                        FROM equipment_moves em
+                        WHERE em.equipment_id = e.id
+                    ), '[]'::json), -- Valor padrão se for NULL
+                    'maintenances', COALESCE(( -- Adicionado COALESCE aqui
+                        SELECT json_agg(
+                            json_build_object(
+                                'id', m.id,
+                                'description', m.description,
+                                'responsible_id', m.responsible_id,
+                                'created_at', m.created_at,
+                                'finished_at', m.finished_at
+                            )
+                        )
+                        FROM maintenance_equipments me
+                        JOIN maintenances m ON m.id = me.maintenance_id
+                        WHERE me.equipment_id = e.id
+                    ), '[]'::json) -- Valor padrão se for NULL
+                ) AS history_timeline
+            FROM equipments e
+            WHERE e.id = %s
+            OFFSET %s ROWS
+            FETCH NEXT %s ROWS ONLY
+        """
+
+        try:
+            cursor.execute(sql, (page, per_page, equipment_id, (page - 1) * per_page, per_page))
+            data = cursor.fetchone()
+            
+            if not data:
+                return None # Ou levantar uma exceção 404
+                
+            return EquipmentHistoryResponse(**data)
+        except Exception as e:
             raise e

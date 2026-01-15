@@ -2,6 +2,9 @@ from .base import Base
 from enums import EquipmentStatusEnum, DepartmentEnum
 from pydantic import field_validator
 from schemas.department import Department
+from schemas.pagination import Pagination
+from typing import List, TYPE_CHECKING, Optional
+from datetime import datetime
 
 class EquipmentBase(Base):
     name: str
@@ -63,5 +66,24 @@ class EquipmentMoveCreate(Base):
 class EquipmentMoveResponse(Base):
     id: str
     equipment_id: str
-    previously_located_at: DepartmentEnum
+    previously_located_at: DepartmentEnum # acho que vai precisar de uma refatoração aqui para que ele converta o ID em objeto
     newly_alocated_at: DepartmentEnum
+
+class MaintenanceForHistory(Base):
+    id: str
+    description: str
+    responsible_id: str # fazer a refatoração aqui
+    created_at: datetime
+    finished_at: Optional[datetime] = None
+
+class EquipmentMoveWithDate(EquipmentMoveResponse): # tem que refatorar isso daqui para que o outro passe a data também porque é importante
+    date: datetime
+
+class HistoryTimeline(Base):
+    movements: List[EquipmentMoveWithDate] = []
+    maintenances: List[MaintenanceForHistory] = []
+
+class EquipmentHistoryResponse(Base):
+    equipment_summary: Equipment
+    pagination: Pagination
+    history_timeline: HistoryTimeline
