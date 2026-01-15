@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, status
 from enums import EquipmentStatusEnum, DepartmentEnum
 from dependencies import get_db_connection, get_current_user
 from repositories.equipment_repository import EquipmentRepository
-from schemas.equipment import EquipmentCreate, Equipment, EquipmentMoveCreate, EquipmentMoveResponse
+from schemas.equipment import EquipmentCreate, Equipment, EquipmentMoveCreate, EquipmentMoveResponse, EquipmentHistoryResponse
+from typing import Optional, List
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("/", response_model=Optional[List[Equipment]])
 def get_equipments(
     status: str | None = None,
     department: DepartmentEnum | None = None,
@@ -36,3 +37,7 @@ def update_equipment(equipment_id: str, equipment: EquipmentCreate, conn = Depen
 @router.post("/{id}/move", response_model=EquipmentMoveResponse)
 def move_equipment(equipment_id: str, move: EquipmentMoveCreate, conn = Depends(get_db_connection), user = Depends(get_current_user)):
     return EquipmentRepository(conn).move(equipment_id, move)
+
+@router.get("/{id}/full-history", response_model=EquipmentHistoryResponse)
+def get_full_history(equipment_id: str, page: int = 1, per_page: int = 20, conn = Depends(get_db_connection), user = Depends(get_current_user)):
+    return EquipmentRepository(conn).history(equipment_id, page, per_page)

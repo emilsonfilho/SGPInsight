@@ -1,5 +1,5 @@
 from enums import MaintenanceStatusEnum
-from schemas.maintenance import MaintenanceCreate
+from schemas.maintenance import MaintenanceCreate, MaintenanceResponse
 from schemas.component import ComponentInstall, ComponentRemove
 from .base_repository import BaseRepository
 from datetime import datetime
@@ -15,12 +15,13 @@ class MaintenanceRepository(BaseRepository):
     ):
         cursor = self.conn.cursor()
 
-        sql = "SELECT * FROM maintenances"
+        sql = "SELECT * FROM vw_maintenance_details"
+        
         conditions = []
         params = []
 
         if status:
-            if status is MaintenanceStatusEnum.ACTIVE:
+            if status == MaintenanceStatusEnum.ACTIVE:
                 conditions.append("finished_at IS NULL")
             else:
                 conditions.append("finished_at IS NOT NULL")
@@ -33,8 +34,9 @@ class MaintenanceRepository(BaseRepository):
             sql += " WHERE " + " AND ".join(conditions)
         
         cursor.execute(sql, params)
+        rows = cursor.fetchall()
 
-        return cursor.fetchall()
+        return [MaintenanceResponse(**row) for row in rows]
     
     def add(self, maintenances: MaintenanceCreate):
         cursor = self.conn.cursor()

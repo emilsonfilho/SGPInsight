@@ -55,7 +55,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             "id": user_id,
             "role_id": role_id
         }
-    except JWTError:
+    except JWTError as e:
         print(f"\n\n---> ERRO REVELADO: {e} <---\n\n")
         raise credentials_exception
 
