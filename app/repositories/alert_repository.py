@@ -10,10 +10,10 @@ class AlertRepository(BaseRepository):
 
         try:
             query = """
-                "SELECT a.id, description, origin, equipment_id, name as priority
+                SELECT a.id, description, origin, equipment_id, name as priority
                 FROM alerts a
                 JOIN alert_priority ap ON priority_id = ap.id
-                ORDER BY priority_id DESC"
+                ORDER BY priority_id DESC
             """
             
             cursor.execute(query)
