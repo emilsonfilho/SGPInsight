@@ -132,6 +132,11 @@ class EquipmentRepository(BaseRepository):
             return None
 
         data['id'] = equipment_id
+
+        # Refazendo modelo de resposta para condizer com o front-end
+        data['status'] = data.pop('equipment_status_id')
+        data['department'] = data.pop('department_id')
+
         return data
 
     def move(self, equipment_id: str, move: EquipmentMoveCreate):
